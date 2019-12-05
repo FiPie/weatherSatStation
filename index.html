@@ -23,7 +23,7 @@
       <option value="cloudless">cloudless</option>
       <option value="l8">l8</option>
       <option value="s2" selected>s2</option>
-      <option value="re">re</option>
+      <option value="re" disabled>re</option>
       <option value="modis">modis</option>
       <option value="terra">terra</option>
       <option value="aqua">aqua</option>
@@ -32,7 +32,6 @@
       <option disabled>Order</option>
       <option value="best" selected>best</option>
       <option value="first">first</option>
-
       <option value="last">last</option>
     </select>
 
@@ -58,25 +57,33 @@
       <option value="wind">wind</option>
     </select>
 
-    <!-- <span id="currentZoom"> </span> -->
-    <!-- <span><button id="currentZoom" disabled>zoom:6</button></span> -->
-    <span><input id="currentZoom" type="text" size="1" value="zoom:6" disabled/></span>
-    <span><button id="zoomOut">-</button></span>
-    <input id="zoom" type="range" min="0" max="11" value="6">
-    <span> <button id="zoomIn">+</button> </span>
+    <span><input id="daysAgo" type="text" size="5" value="days ago: 69" disabled /></span>
+    <span><button id="prevDay">-</button></span>
+    <input id="date" type="range" min="0" max="10000" value="69">
+    <span><button id="nextDay">+</button></span>
 
     <button id="button">Get Weather</button>
+
+    <span><input id="currentZoom" type="text" size="1" value="zoom:6" disabled /></span>
+    <span><button id="zoomOut">-</button></span>
+    <span> <button id="zoomIn">+</button> </span>
+    <div class="slider-wrapper">
+      <input id="zoom" type="range" min="0" max="15" value="6">
+    </div>
+
   </div>
 
   <div id="displayContainer">
     <h1>City: <span id="city">unknown</span> </h1>
     <img id="image">
 
-    <div>Temp: <span id="temp"></span>&deg<span class="units"></span> </div>
+    <div>Temp: <span id="temp"></span>&deg<span class="units"></span></div>
     <div>Pressure: <span id="pressure"></span> <span> hPa</span></div>
     <div>Humidity: <span id="humidity"></span> <span> %</span></div>
     <div>Visibility: <span id="visibility"></span> <span> m</span></div>
   </div>
+
+
 
   <div id="mapContainer">
     <img id="map" width="500" height="500">

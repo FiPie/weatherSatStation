@@ -1,14 +1,15 @@
 var apiKey = "GET YOUR OWN APPID AT: https://openweathermap.org";
 var zoom = $('#zoom').val();
-var currentZoom = zoom;
 var lat, lon;
 var layer = $('#layersUI').val();
 var from = $('#satelites').val();
 var order = $('#order').val();
-var where = 'now-300';
+var where = $('#date').val();
 var select = 'b4,b3,b2';
 var op = $('#op').val();
 var color;
+
+
 
 $(function() {
 
@@ -16,7 +17,8 @@ $(function() {
   var unitsUI = $('#unitsUI').val();
   getWeather(cityUI);
 
-
+  //loads everything in the url
+  // $('#load').load("https://api.openweathermap.org/data/2.5/weather?q=" + cityUI + "&units=" + unitsUI + "&appid="+apiKey);
 
   //fetch weather info on click
   $('#button').click(function() {
@@ -46,31 +48,49 @@ $(function() {
   });
   $('#zoom').change(function(event) {
     zoom = $('#zoom').val();
-    currentZoom = zoom;
     $('#currentZoom').val('zoom:' + zoom);
-    getWeatherMap(lat, lon, zoom)
+    getWeatherMap();
   });
 
 
-  //Reload the weather info upon unit change
+  //Reloads the weather info upon unit change
   $('#unitsUI').change(function(event) {
     getWeather();
   });
+  //Reloads the weather info layer
   $('#layersUI').change(function(event) {
     layer = $('#layersUI').val();
-    getWeatherMap(lat, lon, zoom);
+    getWeatherMap();
   });
+  //Reloads the satelite view upon settings change
   $('#satelites').change(function(event) {
     from = $('#satelites').val();
-    getWeatherMap(lat, lon, zoom);
+    getWeatherMap();
   });
+  //Determines which of the satelite images are display in reference to the date set
   $('#order').change(function(event) {
     order = $('#order').val();
-    getWeatherMap(lat, lon, zoom);
+    getWeatherMap();
   });
+  //predefined color settings
   $('#op').change(function(event) {
     op = $('#op').val();
-    getWeatherMap(lat, lon, zoom);
+    getWeatherMap();
+  });
+
+  //Changes the date of satelite map image
+  $('#date').change(function(event) {
+    where = $('#date').val();
+    $('#daysAgo').val('days ago: ' + where);
+    getWeatherMap();
+  });
+  $('#nextDay').click(function(event) {
+    $('#date').val(++where);
+    $("#date").trigger("change");
+  });
+  $('#prevDay').click(function(event) {
+    $('#date').val(--where);
+    $("#date").trigger("change");
   });
 
 
@@ -82,7 +102,9 @@ function getWeather() {
   cityUI = $('#cityUI').val();
   unitsUI = $('#unitsUI').val();
   var urlWeather = "https://api.openweathermap.org/data/2.5/weather?q=" + cityUI + "&units=" + unitsUI + "&appid=" + apiKey;
-
+  //loads everything in the url
+  // $('#load').load("https://api.openweathermap.org/data/2.5/weather?q=" + cityUI + "&units=" + unitsUI + "&appid="+apiKey);
+  //$('#load').load('https://tile.openweathermap.org/map/clouds/3/30/-20.png?appid='+apiKey);
   //server sends data using GET method as JSON
   $.getJSON(urlWeather,
     function(result) {
@@ -99,7 +121,7 @@ function getWeather() {
       zoom = $('#zoom').val();
       lat = result.coord.lat;
       lon = result.coord.lon;
-      getWeatherMap(lat, lon, zoom);
+      getWeatherMap();
 
     }).fail(function() {
     alert('Incorrect City name');
@@ -108,12 +130,49 @@ function getWeather() {
 }
 
 
-function getWeatherMap(lat, lon) {
+function getWeatherMap() {
   console.log('lat:' + lat + '  lon:' + lon);
   from = $('#satelites').val();
-  order = $('#order').val();
-  op = $('#op').val();
-  zoom = $('#zoom').val();
+
+  if (from === 'modis' || from === 'terra' || from === 'aqua') {
+    $('#zoom').prop('min', '0');
+    $('#zoom').prop('max', '7');
+    zoom = $('#zoom').val();
+    $('#zoom').val(zoom > 7 ? 7 : zoom);
+    $('#currentZoom').val('zoom:' + zoom);
+    $('#order').val('first');
+    order = 'first';
+
+    $('#date').prop('min', '69');
+    $('#date').prop('max', '317');
+    where = where >= 317 ? 317 : (where < 69 ? 69 : where);
+    $('#daysAgo').val('days ago: ' + where);
+
+  } else if (from === 's2') {
+    $('#zoom').prop('min', '6');
+    $('#zoom').prop('max', '13');
+    zoom = $('#zoom').val();
+    $('#zoom').val(zoom > 13 ? 13 : (zoom < 6 ? 6 : zoom));
+    $('#currentZoom').val('zoom:' + zoom);
+    $('#date').prop('min', '2');
+    $('#date').prop('max', '1626');
+    where = where >= 1626 ? 1626 : (where < 2 ? 2 : where);
+    $('#daysAgo').val('days ago: ' + where);
+  } else if (from === 'l8') {
+    $('#zoom').prop('min', '5');
+    $('#zoom').prop('max', '13');
+    zoom = $('#zoom').val();
+    $('#zoom').val(zoom > 13 ? 13 : (zoom < 5 ? 5 : zoom));
+    $('#currentZoom').val('zoom:' + zoom);
+    $('#date').prop('min', '2');
+    $('#date').prop('max', '2427');
+    where = where >= 2427 ? 2427 : (where < 2 ? 2 : where);
+    $('#daysAgo').val('days ago: ' + where);
+  } else {
+    order = $('#order').val();
+    op = $('#op').val();
+    zoom = $('#zoom').val();
+  }
 
   var layer = $('#layersUI').val();
   var latitude = lat;
@@ -126,14 +185,15 @@ function getWeatherMap(lat, lon) {
   //var urlMap = 'https://tile.openweathermap.org/map/' + layer + '/' + z + '/' + x + '/' + y + '.png?appid=' + apiKey;
   //console.log('urlMap: ' + urlMap);
 
-  var fullUrl = 'https://sat.owm.io/sql/' + z + '/' + x + '/' + y + '?from=' + from + '&where=' + where + '&order=' + order + '&op=' + op + '&APPID=' + apiKey;
-  var testUrlModis = 'https://a.sat.owm.io/api/search?lat=55&lon=37&select=b1,b4,b3&from=modis&order=first&APPID=' + apiKey;
+  var fullUrl = 'https://sat.owm.io/sql/' + z + '/' + x + '/' + y + '?from=' + from + '&where=NOW-' + where + '&order=' + order + '&op=' + op + '&APPID=' + apiKey;
+
+  // var testUrlModis = 'http://a.sat.owm.io/sql/' + z + '/' + x + '/' + y + '?select=b1,b4,b3&from=modis&order=last&color=modis&APPID=' + apiKey;
   //var lolaUrl = 'https://sat.owm.io/api/3.0/search?lat=' + lat + '&lon=' + lon + '&appid=' + apiKey;
 
 
-  $("#map").attr("src", testUrlModis);
-  $("#map").attr("alt", testUrlModis);
-  console.log('fullUrl: ' + testUrlModis);
+  $("#map").attr("src", fullUrl);
+  $("#map").attr("alt", fullUrl);
+  console.log('fullUrl: ' + fullUrl);
 
   // {layer} => layer name
   // {z} => number of zoom level
