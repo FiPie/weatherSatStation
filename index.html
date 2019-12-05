@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+
+  <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div id="menuContainer">
+    <input type="text" id="cityUI" autofocus autocomplete required value="Berlin">
+    <select id="unitsUI">
+      <option value="Units" disabled>Units</option>
+      <option value="metric" selected>metric</option>
+      <option value="imperial">imperial</option>
+    </select>
+    <select id="satelites">
+      <option disabled>Satelites</option>
+      <option value="cloudless">cloudless</option>
+      <option value="l8">l8</option>
+      <option value="s2" selected>s2</option>
+      <option value="re">re</option>
+      <option value="modis">modis</option>
+      <option value="terra">terra</option>
+      <option value="aqua">aqua</option>
+    </select>
+    <select id="order">
+      <option disabled>Order</option>
+      <option value="best" selected>best</option>
+      <option value="first">first</option>
+
+      <option value="last">last</option>
+    </select>
+
+    <select id="op">
+      <option disabled>Op</option>
+      <option value="rgb" selected>rgb</option>
+      <option value="truecolor">truecolor</option>
+      <option value="falsecolor">falsecolor</option>
+      <option value="ndvi">ndvi</option>
+      <option value="evi">evi</option>
+      <option value="ndi">ndi</option>
+    </select>
+
+    <select id="layersUI">
+      <option value="Layers" disabled>Layers</option>
+      <option value="clouds_new">clouds</option>
+      <option value="pressure_new">pressure</option>
+      <option value="wind_new">windspeed</option>
+      <option value="precipitation_new">precipitation</option>
+      <option value="temp_new">temperature</option>
+      <option value="snow">snow</option>
+      <option value="rain" selected>rain</option>
+      <option value="wind">wind</option>
+    </select>
+
+    <!-- <span id="currentZoom"> </span> -->
+    <!-- <span><button id="currentZoom" disabled>zoom:6</button></span> -->
+    <span><input id="currentZoom" type="text" size="1" value="zoom:6" disabled/></span>
+    <span><button id="zoomOut">-</button></span>
+    <input id="zoom" type="range" min="0" max="11" value="6">
+    <span> <button id="zoomIn">+</button> </span>
+
+    <button id="button">Get Weather</button>
+  </div>
+
+  <div id="displayContainer">
+    <h1>City: <span id="city">unknown</span> </h1>
+    <img id="image">
+
+    <div>Temp: <span id="temp"></span>&deg<span class="units"></span> </div>
+    <div>Pressure: <span id="pressure"></span> <span> hPa</span></div>
+    <div>Humidity: <span id="humidity"></span> <span> %</span></div>
+    <div>Visibility: <span id="visibility"></span> <span> m</span></div>
+  </div>
+
+  <div id="mapContainer">
+    <img id="map" width="500" height="500">
+  </div>
+
+
+  <div id="load"></div>
+
+  <script src="js/weather.js"></script>
+</body>
+
+</html>
